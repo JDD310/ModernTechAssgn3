@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Password Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <main class="container">
+      <h1>Password Manager</h1>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="messages">
+            {% for category, message in messages %}
+              <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <section class="card">
+        <h2>Add Credential</h2>
+        <form method="post" action="{{ url_for('add_entry') }}">
+          <label>
+            Title
+            <input type="text" name="title" placeholder="e.g. Email" required>
+          </label>
+          <label>
+            Username
+            <input type="text" name="username" placeholder="your username" required>
+          </label>
+          <label>
+            Password
+            <input type="text" name="password" placeholder="your password" required>
+          </label>
+          <button type="submit">Save</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Saved Passwords</h2>
+        {% if entries %}
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for entry in entries %}
+                <tr>
+                  <td>{{ entry.title }}</td>
+                  <td>{{ entry.username }}</td>
+                  <td>{{ entry.password }}</td>
+                  <td>
+                    <form method="post" action="{{ url_for('delete_entry', entry_id=entry.id) }}">
+                      <button type="submit" class="danger">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>No saved passwords yet.</p>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>
